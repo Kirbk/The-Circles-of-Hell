@@ -1,14 +1,14 @@
 package game;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
 import engine.Display;
 import engine.Entity;
 import game.entities.Player;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 public class Main {
-	Player player = new Player();
+	public static Player player = new Player(); 
 	
 	public Main() {
 		GlobalVars.display = new Display("Version 0.1", 640, 480, false);
@@ -34,6 +34,12 @@ public class Main {
 			
 			update(delta);
 			GlobalVars.display.repaint();
+			
+			try {
+				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -48,14 +54,16 @@ public class Main {
 
 			@Override
 			public void keyPressed(KeyEvent k) {
-				 if(k.getKeyCode() == KeyEvent.VK_W) {
-					 player.dy = player.MOVE_SPEED;
-				 }
+				if(!GlobalVars.keys.contains(k.getKeyCode())) {
+					GlobalVars.keys.add(k.getKeyCode());
+				}
 			}
 
 			@Override
 			public void keyReleased(KeyEvent k) {
-				
+				if(GlobalVars.keys.contains(k.getKeyCode())) {
+					GlobalVars.keys.remove((Object) k.getKeyCode());
+				}
 			}
 
 			@Override
